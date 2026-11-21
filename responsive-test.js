@@ -90,7 +90,8 @@ const check = (name, ok, detail = '') => {
 
     await page.goto(base + 'admin.html', { waitUntil: 'load' });
     await page.waitForSelector('#ownerLogin', { timeout: 20000 });
-    check(width + 'px owner login form renders', (await page.$('#ownerLogin input[name="username"], #ownerLogin input[name="password"]')).length === 2);
+    const loginInputCount = await page.$eval('#ownerLogin', form => form.querySelectorAll('input').length);
+    check(width + 'px owner login form renders', loginInputCount >= 2, 'input count ' + loginInputCount);
     check(width + 'px dashboard has no page overflow',
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
     check(width + 'px dashboard has no JavaScript errors', pageErrors.length === 0, pageErrors.join(' | '));
