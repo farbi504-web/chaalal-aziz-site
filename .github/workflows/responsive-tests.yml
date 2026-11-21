@@ -18,11 +18,12 @@ jobs:
           node-version: 22
       - name: Install browser test tools
         run: |
-          npm install --no-save playwright jszip
+          npm install --no-save playwright
           npx playwright install --with-deps chromium
       - name: Check JavaScript syntax
         run: |
           node --check app.js
+          node --check cloud-data.js
           node --check admin.js
           node --check data.js
           node --check draft.js
