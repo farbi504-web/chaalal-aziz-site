@@ -1,0 +1,40 @@
+name: Responsive website checks
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  responsive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser test tools
+        run: |
+          npm install --no-save playwright jszip
+          npx playwright install --with-deps chromium
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check admin.js
+          node --check data.js
+          node --check draft.js
+          node --check ar-static.js
+          node --check i18n.js
+      - name: Start static website
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/chaalal-http.log 2>&1 &
+          echo $! > /tmp/chaalal-http.pid
+          for i in $(seq 1 20); do
+            curl --fail http://127.0.0.1:8765/index.html >/dev/null && break
+            sleep 1
+          done
+      - name: Test phone, tablet and desktop layouts
+        run: node responsive-test.js

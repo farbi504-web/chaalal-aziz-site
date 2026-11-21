@@ -72,7 +72,7 @@
   /* ---------- shared layout components ---------- */
   const page = document.body.dataset.page;
   const nav = [['index.html', 'nav.home', 'Accueil'], ['catalogue.html', 'nav.vehicles', 'Nos véhicules'], ['index.html#reservation', 'nav.how', 'Comment réserver'], ['index.html#avis', 'nav.reviews', 'Avis Google'], ['index.html#contact', 'nav.contact', 'Contact']];
-  const logo = cls => `<picture><source srcset="assets/logo.webp" type="image/webp"><img src="assets/logo.png" alt="Chaâlal Aziz — Location de voiture" width="${cls ? 168 : 116}" height="${cls ? 84 : 58}"></picture>`;
+  const logo = cls => `<picture><source srcset="logo.webp" type="image/webp"><img src="logo.png" alt="Chaâlal Aziz — Location de voiture" width="${cls ? 168 : 116}" height="${cls ? 84 : 58}"></picture>`;
 
   function renderHeader() {
     const el = $('#site-header'); if (!el) return;
