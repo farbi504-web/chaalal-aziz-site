@@ -1,5 +1,37 @@
-(function () {
+(async function () {
   'use strict';
+  const SUPABASE_URL = "https://dnpejlvzcefollynnixy.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_94yxuQMMiyWmjUwjgU3tuA_UOijez7q";
+  const OWNER_ID = "e9598f29-ba5b-4360-a315-ac48671ff34c";
+  const OWNER_EMAIL = 'aziz@gmail.com';
+  const cloud = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  let authSession = null;
+  try {
+    const auth = await cloud.auth.getSession();
+    authSession = auth.data && auth.data.session;
+  } catch (error) {}
+  if (!authSession || authSession.user.id !== OWNER_ID) {
+    document.body.innerHTML = '<main style="max-width:420px;margin:10vh auto;padding:28px;font-family:system-ui;background:#fff;border-radius:18px;box-shadow:0 12px 40px #071d3520;direction:rtl"><h1 style="color:#071D35">دخول المالك</h1><p>سجّل الدخول لإدارة موقع CHAÂLAL AZIZ.</p><form id="ownerLogin"><label>اسم المستخدم<input name="username" autocomplete="username" required value="aziz" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box"></label><label>كلمة المرور<input name="password" type="password" autocomplete="current-password" required style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box"></label><button style="width:100%;padding:13px;background:#C8202A;color:#fff;border:0;border-radius:10px;font-weight:700">دخول</button><p id="loginError" role="alert" style="color:#C8202A"></p></form><a href="index.html">العودة للموقع</a></main>';
+    document.getElementById('ownerLogin').addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = event.currentTarget, button = form.querySelector('button'), error = document.getElementById('loginError');
+      button.disabled = true; error.textContent = 'جارٍ التحقق…';
+      const result = await cloud.auth.signInWithPassword({ email: OWNER_EMAIL, password: form.elements.password.value });
+      if (result.error || !result.data.user || result.data.user.id !== OWNER_ID) {
+        if (result.data && result.data.session) await cloud.auth.signOut();
+        error.textContent = 'تعذّر تسجيل الدخول. تحقق من كلمة المرور وحساب المالك.';
+        button.disabled = false; return;
+      }
+      location.reload();
+    });
+    return;
+  }
+  const cloudRow = await cloud.from('site_content').select('content').eq('id', 1).maybeSingle();
+  if (!cloudRow.error && cloudRow.data && cloudRow.data.content && cloudRow.data.content.business && Array.isArray(cloudRow.data.content.vehicles)) {
+    window.BUSINESS = Object.assign({}, window.BUSINESS, cloudRow.data.content.business);
+    window.VEHICLES = cloudRow.data.content.vehicles;
+    window.REVIEWS = cloudRow.data.content.reviews || [];
+  }
   const $ = (s, r) => (r || document).querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const clone = o => JSON.parse(JSON.stringify(o));
@@ -42,7 +74,7 @@
   const banner = () => { const m = msg; msg = null; return m ? `<div class="${m.t}" role="status">${esc(m.m)}</div>` : ''; };
 
   /* ---------- tabs ---------- */
-  const TABS = [['vehicles', 'السيارات'], ['business', 'معلومات الوكالة'], ['reviews', 'التقييمات'], ['publish', 'النشر والنسخ الاحتياطي']];
+  const TABS = [['vehicles', 'السيارات'], ['business', 'معلومات الوكالة'], ['reviews', 'التقييمات'], ['publish', 'نشر التعديلات']];
   function render() {
     $('#tabs').innerHTML = TABS.map(t => `<button role="tab" aria-selected="${tab === t[0]}" data-tab="${t[0]}">${t[1]}</button>`).join('');
     const v = $('#view');
@@ -149,12 +181,43 @@
 
   /* ---------- publish ---------- */
   function publishView() {
-    const imgs = state.vehicles.reduce((n, v) => n + (v.images || []).filter(s => s.startsWith('data:')).length, 0) + (state.business.heroImage && state.business.heroImage.startsWith('data:') ? 1 : 0);
-    return `${banner()}<div class="card"><h2>نشر التعديلات</h2>
-      <p class="note">هذا الموقع ثابت (بلا خادم)، لذلك تُحفظ تعديلاتك كمسودة في هذا المتصفح فقط، ولا يراها الزوار قبل رفع الملفات إلى الاستضافة.</p>
-      <ol class="steps"><li>اضغط «تنزيل حزمة النشر» (ملف ZIP يضم <code>data.js</code> وصور السيارات${imgs ? ` (${imgs} صورة جديدة)` : ''}).</li><li>فك الضغط واستبدل ملف <code>data.js</code> وارفع مجلد <code>assets</code> إلى جذر الاستضافة مع استبدال الملفات الموجودة.</li><li>حدّث الموقع: تختفي شارة «مسودة» ويراها الزوار.</li></ol>
-      <div class="btns"><button class="btn red" data-act="export-zip">تنزيل حزمة النشر (ZIP)</button></div></div>
-`;
+    return `${banner()}<div class="card"><h2>نشر التعديلات للزوار</h2>
+      <p class="note">المسودة الحالية محفوظة في هذا المتصفح. عند النشر تُحفظ البيانات والصور في Supabase لتظهر لجميع الزوار.</p>
+      <p class="hint">السيارات: ${state.vehicles.length} · التقييمات: ${state.reviews.length}</p>
+      <div class="btns"><button class="btn red" data-act="publish-cloud">نشر التعديلات الآن</button></div>
+    </div>`;
+  }
+  async function publishCloud() {
+    const button = document.querySelector('[data-act="publish-cloud"]');
+    if (button) { button.disabled = true; button.textContent = 'جارٍ النشر…'; }
+    try {
+      const out = clone(state);
+      const uploadImage = async (src, path) => {
+        if (!src || !src.startsWith('data:')) return src;
+        const blob = await (await fetch(src)).blob();
+        const result = await cloud.storage.from('site-images').upload(path, blob, { upsert: true, contentType: blob.type || 'image/jpeg' });
+        if (result.error) throw result.error;
+        return cloud.storage.from('site-images').getPublicUrl(path).data.publicUrl;
+      };
+      for (const vehicle of out.vehicles) {
+        vehicle.images = await Promise.all((vehicle.images || []).map((src, i) =>
+          uploadImage(src, 'vehicles/' + vehicle.id + '/' + (i + 1) + '-' + Date.now() + '.jpg')));
+      }
+      if (out.business.heroImage) out.business.heroImage = await uploadImage(out.business.heroImage, 'hero/' + Date.now() + '.jpg');
+      const saved = await cloud.from('site_content').upsert({
+        id: 1, content: out, updated_at: new Date().toISOString(), updated_by: authSession.user.id
+      }, { onConflict: 'id' });
+      if (saved.error) throw saved.error;
+      state = out; Object.assign(window.BUSINESS, out.business);
+      window.VEHICLES = out.vehicles; window.REVIEWS = out.reviews;
+      localStorage.removeItem(KEY); hasDraft = false;
+      msg = { t: 'ok', m: 'تم النشر بنجاح. التعديلات أصبحت متاحة لجميع الزوار.' };
+      tab = 'publish'; render();
+    } catch (error) {
+      console.error(error);
+      msg = { t: 'err', m: 'تعذّر النشر: ' + (error.message || 'تحقق من الاتصال وصلاحيات Supabase.') };
+      render();
+    }
   }
   const ext = s => (s.match(/^data:image\/(\w+)/) || [, 'jpeg'])[1].replace('jpeg', 'jpg');
   async function buildPackage() {
@@ -190,6 +253,7 @@
     if (a === 'save-r') { const r = editing.data, author = $('#r-author').value.trim(), rating = num($('#r-rating').value, 1, 5), text = $('#r-text').value.trim();
       const errs = []; if (!author) errs.push('الاسم مطلوب.'); if (rating == null || Number.isNaN(rating) || !Number.isInteger(rating)) errs.push('النجوم رقم صحيح من 1 إلى 5.'); if (!text) errs.push('نص التقييم مطلوب.'); if (errs.length) return err(errs);
       Object.assign(r, { author, rating, text }); if (editing.mode === 'new') state.reviews.push(r); else state.reviews[editing.index] = r; editing = null; if (persist()) msg = { t: 'ok', m: 'تم الحفظ.' }; return render(); }
+    if (a === 'publish-cloud') { await publishCloud(); return; }
     if (a === 'export-zip') {
       if (!window.JSZip) { msg = { t: 'err', m: 'تعذّر تحميل أداة الضغط (يلزم اتصال بالإنترنت).' }; return render(); }
       const { js, files } = await buildPackage(), z = new JSZip(); z.file('data.js', js); files.forEach(([p, b64]) => z.file(p, b64, { base64: true }));
