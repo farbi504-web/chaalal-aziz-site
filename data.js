@@ -38,7 +38,30 @@ window.BUSINESS = {
    cat: 'citadine' | 'berline' | 'suv' | 'utilitaire'
    trans: 'manual' | 'auto'      fuel: 'petrol' | 'diesel' | 'hybrid' | 'electric'
    ------------------------------------------------------------ */
-window.VEHICLES = [];
+window.VEHICLES = [
+  {
+    id: 'demo-renault-clio',
+    demo: true,
+    featured: false,
+    name: 'Renault Clio — Démo',
+    nameAr: 'رينو كليو — سيارة تجريبية',
+    brand: 'Renault',
+    model: 'Clio',
+    year: null,
+    cat: 'citadine',
+    trans: 'manual',
+    fuel: 'petrol',
+    seats: 5,
+    price: null,
+    available: null,
+    images: [],
+    conditions: null,
+    desc: {
+      fr: "Fiche de démonstration uniquement — ce véhicule n'est pas proposé à la location.",
+      ar: 'بطاقة تجريبية للعرض فقط — هذه السيارة ليست معروضة للإيجار.'
+    }
+  }
+];
 
 /* ------------------------------------------------------------
    REAL GOOGLE REVIEWS (copied by the owner from the Google Maps listing).
