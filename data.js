@@ -38,26 +38,7 @@ window.BUSINESS = {
    cat: 'citadine' | 'berline' | 'suv' | 'utilitaire'
    trans: 'manual' | 'auto'      fuel: 'petrol' | 'diesel' | 'hybrid' | 'electric'
    ------------------------------------------------------------ */
-window.VEHICLES = [
-  { id:'renault-clio', demo:true, featured:true, name:'Renault Clio', nameAr:'رينو كليو', brand:'Renault', model:'Clio',
-    year:2022, cat:'citadine', trans:'manual', fuel:'petrol', seats:5, price:null, available:null, images:[], conditions:null,
-    desc:{ fr:'Citadine pratique pour les déplacements en ville et sur la côte.', ar:'سيارة مدينة عملية للتنقل في المدينة وعلى الساحل.' } },
-  { id:'dacia-logan', demo:true, featured:true, name:'Dacia Logan', nameAr:'داسيا لوغان', brand:'Dacia', model:'Logan',
-    year:2023, cat:'berline', trans:'manual', fuel:'petrol', seats:5, price:null, available:null, images:[], conditions:null,
-    desc:{ fr:'Berline spacieuse, adaptée aux trajets en famille.', ar:'سيارة سيدان واسعة مناسبة للرحلات العائلية.' } },
-  { id:'peugeot-208', demo:true, featured:false, name:'Peugeot 208', nameAr:'بيجو 208', brand:'Peugeot', model:'208',
-    year:2022, cat:'citadine', trans:'manual', fuel:'petrol', seats:5, price:null, available:null, images:[], conditions:null,
-    desc:{ fr:'Citadine moderne et agile.', ar:'سيارة مدينة عصرية وسهلة القيادة.' } },
-  { id:'hyundai-tucson', demo:true, featured:true, name:'Hyundai Tucson', nameAr:'هيونداي توسان', brand:'Hyundai', model:'Tucson',
-    year:2023, cat:'suv', trans:'auto', fuel:'diesel', seats:5, price:null, available:null, images:[], conditions:null,
-    desc:{ fr:'SUV confortable, boîte automatique.', ar:'سيارة SUV مريحة بناقل حركة أوتوماتيكي.' } },
-  { id:'toyota-hilux', demo:true, featured:false, name:'Toyota Hilux', nameAr:'تويوتا هيلوكس', brand:'Toyota', model:'Hilux',
-    year:2022, cat:'utilitaire', trans:'manual', fuel:'diesel', seats:5, price:null, available:null, images:[], conditions:null,
-    desc:{ fr:'Pick-up robuste pour le transport et les terrains difficiles.', ar:'بيك أب قوي للنقل والطرق الوعرة.' } },
-  { id:'kia-sportage', demo:true, featured:false, name:'Kia Sportage', nameAr:'كيا سبورتاج', brand:'Kia', model:'Sportage',
-    year:2023, cat:'suv', trans:'auto', fuel:'petrol', seats:5, price:null, available:null, images:[], conditions:null,
-    desc:{ fr:'SUV moderne, boîte automatique.', ar:'سيارة SUV عصرية بناقل حركة أوتوماتيكي.' } }
-];
+window.VEHICLES = [];
 
 /* ------------------------------------------------------------
    REAL GOOGLE REVIEWS (copied by the owner from the Google Maps listing).
