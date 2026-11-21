@@ -71,8 +71,8 @@ const check = (name, ok, detail = '') => {
     }
 
     await page.goto(base + 'index.html', { waitUntil: 'load' });
-    await page.waitForSelector('#menuToggle', { timeout: 20000 });
     if (width <= 980) {
+      await page.waitForSelector('#menuToggle', { state: 'visible', timeout: 20000 });
       const menu = await page.$('#menuToggle');
       check(width + 'px mobile navigation control exists', !!menu);
       if (menu) {
