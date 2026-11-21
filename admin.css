@@ -34,3 +34,35 @@ input[type=checkbox]{width:auto}.chk{flex-direction:row;align-items:center;gap:8
 ol.steps{padding-inline-start:22px;display:grid;gap:6px}
 .toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 :focus-visible{outline:3px solid var(--red);outline-offset:2px}
+
+
+/* Responsive dashboard */
+html{overflow-x:hidden}
+body{min-width:0;overflow-x:hidden}
+.top-in>*{min-width:0}
+main{width:100%;min-width:0}
+.card{min-width:0;padding:clamp(14px,3vw,20px)}
+.row{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+input,select,textarea,button{max-width:100%;min-width:0}
+.tbl{min-width:620px}
+.scroll{max-width:100%;overscroll-behavior-inline:contain}
+@media(max-width:640px){
+  .top-in{align-items:flex-start;gap:8px}
+  .top h1{font-size:.92rem;flex:1 1 100%}
+  .status{font-size:.72rem}
+  .tabs{padding-inline:10px;scrollbar-width:thin}
+  .tabs button{padding:10px 12px;font-size:.86rem}
+  main{padding:14px 10px 48px}
+  .card{border-radius:11px;margin-bottom:12px}
+  .row{grid-template-columns:minmax(0,1fr);gap:10px}
+  .toolbar{align-items:stretch}
+  .toolbar>*{max-width:100%}
+  .btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .btns .btn{width:100%;padding-inline:8px}
+  .imgs figure{width:calc(50% - 6px)}
+  .imgs img{width:100%;height:auto;aspect-ratio:16/10}
+}
+@media(max-width:380px){
+  .btns{grid-template-columns:minmax(0,1fr)}
+  .top-in{padding-inline:10px}
+}
