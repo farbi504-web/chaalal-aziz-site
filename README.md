@@ -5,7 +5,7 @@ Réservation **par téléphone uniquement** : 0550 49 69 05 (`tel:+213550496905`
 ## Structure
 - `index.html` accueil · `catalogue.html` catalogue + filtres · `vehicule.html?id=…` fiche véhicule
 - `data.js` **seul fichier à modifier** : coordonnées, véhicules, prix, disponibilité, photos
-- `js/i18n.js`, `js/ar-static.js` traductions FR/AR · `js/app.js` composants · `css/style.css`
+- `i18n.js`, `ar-static.js` traductions FR/AR · `app.js` composants · `style.css`
 - `logo.png`, `logo.webp`, `favicon.png` (à la racine) · `sitemap.xml`, `robots.txt`
 
 ## Lancer en local
