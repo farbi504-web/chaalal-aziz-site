@@ -52,7 +52,7 @@
   function card(v) {
     return `<article class="v-card">
       <a class="v-img" href="${detailHref(v)}" aria-label="${esc(I.vName(v))}">${vImg(v, 0, true)}
-        <div class="v-badges">${v.demo ? `<span class="badge demo">${t('badge.demo')}</span>` : ''}${availBadge(v)}</div></a>
+        <div class="v-badges">${availBadge(v)}</div></a>
       <div class="v-body">
         <div><h3 class="v-title">${esc(I.vName(v))}</h3><div class="v-sub">${esc(v.model || '')} · ${esc(t('cat.' + v.cat))}</div></div>
         <div class="v-specs">
@@ -194,7 +194,7 @@
       root.innerHTML = `
         <div class="crumbs"><a href="catalogue.html">${t('cta.backCatalogue')}</a></div>
         <div class="detail">
-          <div><div class="gallery-main" id="gMain">${vImg(v, 0, false)}<div class="v-badges">${v.demo ? `<span class="badge demo">${t('badge.demo')}</span>` : ''}${availBadge(v)}</div></div>
+          <div><div class="gallery-main" id="gMain">${vImg(v, 0, false)}<div class="v-badges">${availBadge(v)}</div></div>
             ${imgs.length > 1 ? `<div class="thumbs" role="group" aria-label="${esc(t('aria.gallery'))}">${imgs.map((s, i) => `<button type="button" data-i="${i}" aria-current="${i === 0}" aria-label="${esc(name)} ${i + 1}"><img src="${esc(s)}" alt="" loading="lazy"></button>`).join('')}</div>` : ''}</div>
           <div><h1>${esc(name)}</h1>
             ${v.price != null ? `<div class="price-big">${num(v.price)} DA <small>${t('price.perDay')}</small></div>` : `<div class="v-price call">${t('price.call')}</div>`}

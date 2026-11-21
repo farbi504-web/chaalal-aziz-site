@@ -54,14 +54,13 @@
   function vehicleList() {
     const rows = state.vehicles.map((x, i) => `<tr>
       <td>${x.images && x.images[0] ? `<img class="thumb" src="${esc(x.images[0])}" alt="">` : '<span class="thumb"></span>'}</td>
-      <td><b dir="auto">${esc(x.name)}</b><br><span class="hint" dir="auto">${esc(x.nameAr || '')}</span> ${x.demo ? '<span class="pill demo">تجريبي</span>' : ''}</td>
+      <td><b dir="auto">${esc(x.name)}</b><br><span class="hint" dir="auto">${esc(x.nameAr || '')}</span></td>
       <td>${esc(CATS[x.cat] || x.cat)}</td>
       <td>${x.price != null ? esc(Number(x.price).toLocaleString('fr-DZ')) + ' دج' : '—'}</td>
       <td>${x.available === true ? '<span class="pill ok">متوفرة</span>' : x.available === false ? '<span class="pill">غير متوفرة</span>' : '<span class="hint">غير محدد</span>'}</td>
       <td style="white-space:nowrap"><button class="btn sm" data-act="edit-v" data-i="${i}">تعديل</button>
         ${delPending === 'v' + i ? `<button class="btn sm danger" data-act="del-v-ok" data-i="${i}">تأكيد الحذف</button><button class="btn sm ghost" data-act="del-cancel">إلغاء</button>` : `<button class="btn sm danger" data-act="del-v" data-i="${i}">حذف</button>`}</td></tr>`).join('');
     return `${banner()}<div class="card"><div class="toolbar"><h2>السيارات (${state.vehicles.length})</h2><button class="btn red" data-act="add-v">+ إضافة سيارة</button></div>
-      <p class="note">السيارات الموسومة «تجريبي» أمثلة فقط. عدّلها أو احذفها وأضف سيارات الوكالة الحقيقية. اترك السعر فارغاً إن لم يكن مؤكداً: سيظهر «اتصل بنا».</p>
       <div class="scroll"><table class="tbl"><thead><tr><th></th><th>السيارة</th><th>الفئة</th><th>السعر/اليوم</th><th>التوفر</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan="6">لا توجد سيارات.</td></tr>'}</tbody></table></div></div>`;
   }
   const blankV = () => ({ id: '', demo: false, featured: false, name: '', nameAr: '', brand: '', model: '', year: null, cat: 'citadine', trans: 'manual', fuel: 'petrol', seats: 5, price: null, available: null, images: [], conditions: null, desc: { fr: '', ar: '' } });
@@ -77,7 +76,6 @@
         ${field('v-price', 'السعر لليوم (دج)', x.price ?? '', { type: 'number', attrs: 'min="0" step="100"', hint: 'اتركه فارغاً إن لم يكن مؤكداً' })}
         ${sel('v-avail', 'التوفر', { '': 'غير محدد (اتصل بنا)', '1': 'متوفرة', '0': 'غير متوفرة' }, x.available === true ? '1' : x.available === false ? '0' : '')}
         <div class="f chk"><input type="checkbox" id="v-featured" ${x.featured ? 'checked' : ''}><label for="v-featured">عرضها في الصفحة الرئيسية</label></div>
-        <div class="f chk"><input type="checkbox" id="v-demo" ${x.demo ? 'checked' : ''}><label for="v-demo">سيارة تجريبية (تظهر بشارة «Démo»)</label></div>
         ${field('v-descFr', 'الوصف (فرنسي)', x.desc.fr, { area: 1, full: 1, dir: 'ltr' })}${field('v-descAr', 'الوصف (عربي)', x.desc.ar, { area: 1, full: 1 })}
         ${field('v-condFr', 'شروط الإيجار (فرنسي)', c.fr, { area: 1, full: 1, dir: 'ltr', hint: 'اتركه فارغاً إن لم تكن مؤكدة' })}${field('v-condAr', 'شروط الإيجار (عربي)', c.ar, { area: 1, full: 1 })}
       </div>
@@ -93,14 +91,14 @@
     if (errs.length) return { errs };
     const av = g('v-avail'), cf = g('v-condFr'), ca = g('v-condAr');
     Object.assign(x, { name, nameAr: g('v-nameAr'), brand: g('v-brand'), model: g('v-model'), year, cat: $('#v-cat').value, trans: $('#v-trans').value, fuel: $('#v-fuel').value, seats, price,
-      available: av === '1' ? true : av === '0' ? false : null, featured: $('#v-featured').checked, demo: $('#v-demo').checked,
+      available: av === '1' ? true : av === '0' ? false : null, featured: $('#v-featured').checked, demo: false,
       desc: { fr: g('v-descFr'), ar: g('v-descAr') }, conditions: cf || ca ? { fr: cf, ar: ca } : null });
     if (!x.id) x.id = uniqueId(slug(name));
     return { ok: true };
   }
   function readVehicleFormLoose() { const g = id => ($('#' + id) ? $('#' + id).value.trim() : ''), x = editing.data;
     Object.assign(x, { name: g('v-name'), nameAr: g('v-nameAr'), brand: g('v-brand'), model: g('v-model'), year: num(g('v-year'), 1980, 2100) || null, cat: $('#v-cat').value, trans: $('#v-trans').value, fuel: $('#v-fuel').value, seats: num(g('v-seats'), 1, 60) || 5, price: num(g('v-price'), 0, 1e8) || null,
-      available: g('v-avail') === '1' ? true : g('v-avail') === '0' ? false : null, featured: $('#v-featured').checked, demo: $('#v-demo').checked, desc: { fr: g('v-descFr'), ar: g('v-descAr') }, conditions: g('v-condFr') || g('v-condAr') ? { fr: g('v-condFr'), ar: g('v-condAr') } : null }); }
+      available: g('v-avail') === '1' ? true : g('v-avail') === '0' ? false : null, featured: $('#v-featured').checked, demo: false, desc: { fr: g('v-descFr'), ar: g('v-descAr') }, conditions: g('v-condFr') || g('v-condAr') ? { fr: g('v-condFr'), ar: g('v-condAr') } : null }); }
 
   /* ---------- business ---------- */
   function businessForm() {
