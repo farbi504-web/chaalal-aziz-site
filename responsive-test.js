@@ -8,6 +8,36 @@ const check = (name, ok, detail = '') => {
 };
 
 (async () => {
+  // Verify the live Supabase public-read policy and that anonymous clients cannot update content.
+  const supabaseUrl = 'https://dnpejlvzcefollynnixy.supabase.co';
+  const publishableKey = 'sb_publishable_94yxuQMMiyWmjUwjgU3tuA_UOijez7q';
+  const restUrl = supabaseUrl + '/rest/v1/site_content?id=eq.1&select=id,content';
+  const headers = { apikey: publishableKey, Authorization: 'Bearer ' + publishableKey };
+  let sharedRows = [];
+  try {
+    const read = await fetch(restUrl, { headers });
+    check('Supabase anonymous read policy responds', read.ok, 'HTTP ' + read.status);
+    if (read.ok) sharedRows = await read.json();
+    check('Supabase shared singleton row exists', Array.isArray(sharedRows) && sharedRows.some(row => row.id === 1));
+    if (Array.isArray(sharedRows) && sharedRows.length) {
+      const denied = await fetch(restUrl, {
+        method: 'PATCH',
+        headers: { ...headers, 'Content-Type': 'application/json', Prefer: 'return=representation' },
+        body: JSON.stringify({ content: sharedRows[0].content })
+      });
+      const responseText = await denied.text();
+      let responseRows = [];
+      try { responseRows = responseText ? JSON.parse(responseText) : []; } catch {}
+      check('Supabase blocks anonymous content updates',
+        [401, 403].includes(denied.status) || (denied.ok && Array.isArray(responseRows) && responseRows.length === 0),
+        'HTTP ' + denied.status);
+    } else {
+      check('Supabase blocks anonymous content updates', false, 'Cannot test without singleton row');
+    }
+  } catch (error) {
+    check('Supabase public access and RLS checks', false, error.message);
+  }
+
   const browser = await chromium.launch({ headless: true });
   const widths = [320, 360, 390, 768, 1024, 1366];
   const routes = [
