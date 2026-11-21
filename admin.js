@@ -154,7 +154,7 @@
     const imgs = state.vehicles.reduce((n, v) => n + (v.images || []).filter(s => s.startsWith('data:')).length, 0) + (state.business.heroImage && state.business.heroImage.startsWith('data:') ? 1 : 0);
     return `${banner()}<div class="card"><h2>نشر التعديلات</h2>
       <p class="note">هذا الموقع ثابت (بلا خادم)، لذلك تُحفظ تعديلاتك كمسودة في هذا المتصفح فقط، ولا يراها الزوار قبل رفع الملفات إلى الاستضافة.</p>
-      <ol class="steps"><li>اضغط «تنزيل حزمة النشر» (ملف ZIP يضم <code>data.js</code> وصور السيارات${imgs ? ` (${imgs} صورة جديدة)` : ''}).</li><li>فك الضغط وارفع المجلدين <code>data.js</code> و<code>assets</code> إلى الاستضافة مع استبدال الملفات الموجودة.</li><li>حدّث الموقع: تختفي شارة «مسودة» ويراها الزوار.</li></ol>
+      <ol class="steps"><li>اضغط «تنزيل حزمة النشر» (ملف ZIP يضم <code>data.js</code> وصور السيارات${imgs ? ` (${imgs} صورة جديدة)` : ''}).</li><li>فك الضغط واستبدل ملف <code>data.js</code> وارفع مجلد <code>assets</code> إلى جذر الاستضافة مع استبدال الملفات الموجودة.</li><li>حدّث الموقع: تختفي شارة «مسودة» ويراها الزوار.</li></ol>
       <div class="btns"><button class="btn red" data-act="export-zip">تنزيل حزمة النشر (ZIP)</button></div></div>
 `;
   }
