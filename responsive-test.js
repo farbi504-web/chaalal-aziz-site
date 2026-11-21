@@ -41,6 +41,7 @@ const check = (name, ok, detail = '') => {
     }
 
     await page.goto(base + 'index.html', { waitUntil: 'load' });
+    await page.waitForSelector('#menuToggle', { timeout: 20000 });
     if (width <= 980) {
       const menu = await page.$('#menuToggle');
       check(width + 'px mobile navigation control exists', !!menu);
@@ -50,14 +51,16 @@ const check = (name, ok, detail = '') => {
       }
     }
     if (width <= 768) {
-      check(width + 'px quick contact links exist', (await page.$('a[href^="tel:"], a[href*="wa.me"]')).length > 0);
+      await page.waitForSelector('.call-bar a[href^="tel:"], .call-bar a[href*="wa.me"]', { timeout: 10000 });
+      check(width + 'px quick contact links exist', (await page.$('.call-bar a[href^="tel:"], .call-bar a[href*="wa.me"]')).length > 0);
     }
     await page.click('#langToggle');
     check(width + 'px Arabic layout remains within viewport',
       await page.evaluate(() => document.documentElement.dir === 'rtl' && document.documentElement.scrollWidth <= window.innerWidth + 1));
 
     await page.goto(base + 'admin.html', { waitUntil: 'load' });
-    check(width + 'px dashboard renders', (await page.$$('.tbl tbody tr')).length > 0);
+    await page.waitForSelector('#ownerLogin', { timeout: 20000 });
+    check(width + 'px owner login form renders', (await page.$('#ownerLogin input[name="username"], #ownerLogin input[name="password"]')).length === 2);
     check(width + 'px dashboard has no page overflow',
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
     check(width + 'px dashboard has no JavaScript errors', pageErrors.length === 0, pageErrors.join(' | '));
