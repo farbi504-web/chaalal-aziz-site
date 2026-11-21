@@ -82,7 +82,7 @@ const check = (name, ok, detail = '') => {
     }
     if (width <= 768) {
       await page.waitForSelector('.call-bar a[href^="tel:"], .call-bar a[href*="wa.me"]', { timeout: 10000 });
-      check(width + 'px quick contact links exist', (await page.$('.call-bar a[href^="tel:"], .call-bar a[href*="wa.me"]')).length > 0);
+      check(width + 'px quick contact links exist', !!(await page.$('.call-bar a[href^="tel:"], .call-bar a[href*="wa.me"]')));
     }
     await page.click('#langToggle');
     check(width + 'px Arabic layout remains within viewport',
