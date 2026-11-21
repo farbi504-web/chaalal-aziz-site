@@ -11,7 +11,8 @@
     const content = rows && rows[0] && rows[0].content;
     if (content && content.business && Array.isArray(content.vehicles)) {
       window.BUSINESS = Object.assign({}, window.BUSINESS || {}, content.business);
-      window.VEHICLES = content.vehicles;
+      // Keep the clearly marked sample vehicle visible until the owner publishes real fleet data.
+      window.VEHICLES = content.vehicles.length ? content.vehicles : (window.VEHICLES || []);
       window.REVIEWS = Array.isArray(content.reviews) ? content.reviews : [];
     }
   } catch (error) {
