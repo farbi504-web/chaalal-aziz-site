@@ -52,7 +52,7 @@
   function card(v) {
     return `<article class="v-card">
       <a class="v-img" href="${detailHref(v)}" aria-label="${esc(I.vName(v))}">${vImg(v, 0, true)}
-        <div class="v-badges">${availBadge(v)}</div></a>
+        <div class="v-badges">${v.demo ? '<span class="badge demo">Démo / تجريبية</span>' : ''}${availBadge(v)}</div></a>
       <div class="v-body">
         <div><h3 class="v-title">${esc(I.vName(v))}</h3><div class="v-sub">${esc(v.model || '')} · ${esc(t('cat.' + v.cat))}</div></div>
         <div class="v-specs">
