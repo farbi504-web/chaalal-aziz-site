@@ -76,6 +76,23 @@
     if (result.error) throw result.error;
     return cloud.storage.from('site-images').getPublicUrl(path).data.publicUrl;
   }
+  async function migrateLegacyDraftImages() {
+    let changed = false;
+    for (const vehicle of state.vehicles) {
+      vehicle.images = await Promise.all((vehicle.images || []).map(async src => {
+        if (typeof src === 'string' && src.startsWith('data:')) {
+          changed = true;
+          return uploadDataImage(src, 'vehicles');
+        }
+        return src;
+      }));
+    }
+    if (typeof state.business.heroImage === 'string' && state.business.heroImage.startsWith('data:')) {
+      state.business.heroImage = await uploadDataImage(state.business.heroImage, 'hero');
+      changed = true;
+    }
+    if (changed) localStorage.setItem(KEY, JSON.stringify(state));
+  }
   const field = (id, label, val, o = {}) => `<div class="f ${o.full ? 'full' : ''}"><label for="${id}">${label}</label>${o.area ? `<textarea id="${id}" ${o.dir ? `dir="${o.dir}"` : ''}>${esc(val)}</textarea>` : `<input id="${id}" type="${o.type || 'text'}" value="${esc(val)}" ${o.ph ? `placeholder="${esc(o.ph)}"` : ''} ${o.dir ? `dir="${o.dir}"` : ''} ${o.attrs || ''}>`}${o.hint ? `<span class="hint">${o.hint}</span>` : ''}</div>`;
   const sel = (id, label, opts, val) => `<div class="f"><label for="${id}">${label}</label><select id="${id}">${Object.entries(opts).map(([k, v]) => `<option value="${esc(k)}" ${String(val) === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></div>`;
   const banner = () => { const m = msg; msg = null; return m ? `<div class="${m.t}" role="status">${esc(m.m)}</div>` : ''; };
@@ -268,5 +285,7 @@
       }
     } catch (x) { msg = { t: 'err', m: x.message || 'حدث خطأ' }; render(); }
   });
+  try { await migrateLegacyDraftImages(); }
+  catch (error) { msg = { t: 'err', m: 'تعذّر نقل الصور القديمة إلى التخزين المشترك: ' + (error.message || 'تحقق من الاتصال.') }; }
   render();
 })();
