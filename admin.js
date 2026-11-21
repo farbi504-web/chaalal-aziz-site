@@ -66,6 +66,16 @@
       img.onerror = () => rej(new Error('تعذّر قراءة الصورة')); img.src = url;
     });
   }
+  // Upload images immediately so base64 image data never fills browser localStorage.
+  async function uploadDataImage(dataUrl, folder) {
+    const blob = await (await fetch(dataUrl)).blob();
+    const path = folder + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.jpg';
+    const result = await cloud.storage.from('site-images').upload(path, blob, {
+      upsert: false, contentType: 'image/jpeg'
+    });
+    if (result.error) throw result.error;
+    return cloud.storage.from('site-images').getPublicUrl(path).data.publicUrl;
+  }
   const field = (id, label, val, o = {}) => `<div class="f ${o.full ? 'full' : ''}"><label for="${id}">${label}</label>${o.area ? `<textarea id="${id}" ${o.dir ? `dir="${o.dir}"` : ''}>${esc(val)}</textarea>` : `<input id="${id}" type="${o.type || 'text'}" value="${esc(val)}" ${o.ph ? `placeholder="${esc(o.ph)}"` : ''} ${o.dir ? `dir="${o.dir}"` : ''} ${o.attrs || ''}>`}${o.hint ? `<span class="hint">${o.hint}</span>` : ''}</div>`;
   const sel = (id, label, opts, val) => `<div class="f"><label for="${id}">${label}</label><select id="${id}">${Object.entries(opts).map(([k, v]) => `<option value="${esc(k)}" ${String(val) === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></div>`;
   const banner = () => { const m = msg; msg = null; return m ? `<div class="${m.t}" role="status">${esc(m.m)}</div>` : ''; };
@@ -189,18 +199,13 @@
     if (button) { button.disabled = true; button.textContent = 'جارٍ النشر…'; }
     try {
       const out = clone(state);
-      const uploadImage = async (src, path) => {
-        if (!src || !src.startsWith('data:')) return src;
-        const blob = await (await fetch(src)).blob();
-        const result = await cloud.storage.from('site-images').upload(path, blob, { upsert: true, contentType: blob.type || 'image/jpeg' });
-        if (result.error) throw result.error;
-        return cloud.storage.from('site-images').getPublicUrl(path).data.publicUrl;
-      };
       for (const vehicle of out.vehicles) {
-        vehicle.images = await Promise.all((vehicle.images || []).map((src, i) =>
-          uploadImage(src, 'vehicles/' + vehicle.id + '/' + (i + 1) + '-' + Date.now() + '.jpg')));
+        vehicle.images = await Promise.all((vehicle.images || []).map(src =>
+          src && src.startsWith('data:') ? uploadDataImage(src, 'vehicles') : src));
       }
-      if (out.business.heroImage) out.business.heroImage = await uploadImage(out.business.heroImage, 'hero/' + Date.now() + '.jpg');
+      if (out.business.heroImage && out.business.heroImage.startsWith('data:')) {
+        out.business.heroImage = await uploadDataImage(out.business.heroImage, 'hero');
+      }
       const saved = await cloud.from('site_content').upsert({
         id: 1, content: out, updated_at: new Date().toISOString(), updated_by: authSession.user.id
       }, { onConflict: 'id' });
@@ -245,8 +250,22 @@
   document.addEventListener('change', async e => {
     const f = e.target;
     try {
-      if (f.id === 'v-file' && f.files.length) { readVehicleFormLoose(); for (const file of f.files) editing.data.images.push(await resize(file, 1200)); return render(); }
-      if (f.id === 'b-file' && f.files[0]) { try { saveBusiness(); } catch (x) {} state.business.heroImage = await resize(f.files[0], 1920); persist(); return render(); }
+      if (f.id === 'v-file' && f.files.length) {
+        readVehicleFormLoose();
+        for (const file of f.files) {
+          const resized = await resize(file, 1200);
+          editing.data.images.push(await uploadDataImage(resized, 'vehicles'));
+        }
+        return render();
+      }
+      if (f.id === 'b-file' && f.files[0]) {
+        const errors = saveBusiness();
+        if (errors.length) { msg = { t: 'err', m: errors.join(' ') }; return render(); }
+        const resized = await resize(f.files[0], 1920);
+        state.business.heroImage = await uploadDataImage(resized, 'hero');
+        persist();
+        return render();
+      }
     } catch (x) { msg = { t: 'err', m: x.message || 'حدث خطأ' }; render(); }
   });
   render();
