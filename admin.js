@@ -30,7 +30,8 @@
   const cloudRow = await cloud.from('site_content').select('content').eq('id', 1).maybeSingle();
   if (!cloudRow.error && cloudRow.data && cloudRow.data.content && cloudRow.data.content.business && Array.isArray(cloudRow.data.content.vehicles)) {
     window.BUSINESS = Object.assign({}, window.BUSINESS, cloudRow.data.content.business);
-    window.VEHICLES = cloudRow.data.content.vehicles;
+    // Keep the demo fallback available in the admin until at least one fleet entry is published.
+    window.VEHICLES = cloudRow.data.content.vehicles.length ? cloudRow.data.content.vehicles : (window.VEHICLES || []);
     window.REVIEWS = cloudRow.data.content.reviews || [];
   }
   const $ = (s, r) => (r || document).querySelector(s);
