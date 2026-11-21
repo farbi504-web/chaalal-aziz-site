@@ -14,7 +14,7 @@ const check = (name, ok, detail = '') => {
     ['home', 'index.html', '.hero'],
     ['catalogue', 'catalogue.html', '#catalogGrid'],
     ['vehicle', 'vehicule.html?id=renault-clio', '#detail'],
-    ['admin', 'admin.html', '#view']
+    ['admin', 'admin.html', '#ownerLogin']
   ];
 
   for (const width of widths) {
