@@ -339,3 +339,9 @@ footer.site-footer{padding:58px 0 24px;background:#081B30}.f-logo{border-radius:
 @media(max-width:980px){.hero-inner{grid-template-columns:minmax(0,1fr);gap:34px;padding:64px 0 68px}.hero-card{max-width:430px}}
 @media(max-width:768px){:root{--header-h:68px}.logo-link img{height:45px}section.block{padding:58px 0}.hero-inner{padding:48px 0 52px;gap:28px}.hero h1{font-size:clamp(2rem,7.5vw,2.7rem);letter-spacing:-.035em}.hero-card{padding:23px}.grid-v{gap:13px}.v-body{padding:14px}.call-bar{box-shadow:0 -2px 12px rgba(10,32,56,.08)}}
 @media(max-width:520px){section.block{padding:48px 0}.hero-inner{padding:40px 0 44px}.hero-badge{font-size:.72rem}.hero p.lead{font-size:.96rem}.hero-card{max-width:none}.rep{padding:23px}}
+
+/* Real photography first: never fake a vehicle photo with clip-art */
+.v-img:has(>svg){background:linear-gradient(145deg,#EEF1F4,#E3E8ED)}
+.v-img:has(>svg)>svg{display:none}
+.v-img:has(>svg)::after{content:"Photos à venir";position:absolute;inset:0;display:grid;place-items:center;color:#647386;font-size:.82rem;font-weight:600;letter-spacing:.02em}
+body.ar .v-img:has(>svg)::after{content:"الصور قريباً";letter-spacing:0}
