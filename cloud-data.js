@@ -11,8 +11,20 @@
     const content = rows && rows[0] && rows[0].content;
     if (content && content.business && Array.isArray(content.vehicles)) {
       window.BUSINESS = Object.assign({}, window.BUSINESS || {}, content.business);
-      // Keep the clearly marked sample vehicle visible until the owner publishes real fleet data.
-      window.VEHICLES = content.vehicles.length ? content.vehicles : (window.VEHICLES || []);
+      // Keep owner-published real vehicles, but always refresh the clearly marked demo cards
+      // from the static catalogue so an older cloud snapshot cannot hide newer demo entries.
+      const staticVehicles = Array.isArray(window.VEHICLES) ? window.VEHICLES : [];
+      const cloudRealVehicles = content.vehicles.filter(vehicle => !vehicle.demo);
+      const staticRealVehicles = staticVehicles.filter(vehicle => !vehicle.demo);
+      const demoVehicles = staticVehicles.filter(vehicle => vehicle.demo);
+      const mergedVehicles = [...cloudRealVehicles, ...staticRealVehicles, ...demoVehicles];
+      const seenVehicleIds = new Set();
+      window.VEHICLES = mergedVehicles.filter(vehicle => {
+        const id = vehicle && vehicle.id;
+        if (!id || seenVehicleIds.has(id)) return false;
+        seenVehicleIds.add(id);
+        return true;
+      });
       window.REVIEWS = Array.isArray(content.reviews) ? content.reviews : [];
     }
   } catch (error) {
