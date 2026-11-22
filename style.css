@@ -528,3 +528,80 @@ body.ar .v-img:has(>svg)::after{content:"الصور قريباً";letter-spacing
 @media(prefers-reduced-motion:reduce){
   .hero .btn{transition:none}
 }
+
+
+/* Premium vehicle catalogue refinement */
+.grid-v{
+  width:100%;
+  max-width:1240px;
+  margin-inline:auto;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:26px;
+  align-items:stretch;
+}
+.v-card{
+  min-width:0;
+  border:1px solid #e4eaf0;
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(7,29,53,.055);
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.v-card:hover{
+  transform:translateY(-4px);
+  border-color:#d5dee8;
+  box-shadow:0 16px 34px rgba(7,29,53,.11);
+}
+.v-img{
+  display:block;
+  aspect-ratio:16/9;
+  background:#edf1f5;
+}
+.v-img img,.v-img svg{
+  display:block;
+  object-fit:cover;
+  transition:transform .35s ease;
+}
+.v-card:hover .v-img img{transform:scale(1.025)}
+.v-badges{top:14px;inset-inline-start:14px}
+.badge{padding:6px 11px;font-size:.72rem;box-shadow:0 2px 8px rgba(7,29,53,.08)}
+.badge.demo{background:#fff4df;color:#785016;border:1px solid #f0d8aa}
+.v-body{padding:20px;gap:14px}
+.v-title{font-size:1.12rem;line-height:1.35;min-height:1.5em}
+.v-sub{font-size:.88rem;margin-top:3px}
+.v-specs{
+  background:#f6f8fb;
+  border:1px solid #edf1f5;
+  border-radius:11px;
+  padding:12px;
+  gap:11px 14px;
+  font-size:.88rem;
+}
+.v-specs span{min-width:0}
+.v-specs svg{width:16px;height:16px}
+.v-price{padding-top:2px;font-size:1rem}
+.v-price.call{font-size:.95rem}
+.v-actions{gap:9px}
+.v-actions .btn{
+  min-height:46px;
+  padding:11px 9px;
+  border-radius:9px;
+  font-size:.86rem;
+  white-space:nowrap;
+}
+.v-actions .full{min-height:49px;font-size:.92rem}
+.v-actions .btn-outline{border-color:#d5dee8}
+.v-actions .btn-wa{background:#16834c}
+.v-actions .btn-wa:hover{background:#116b3e}
+.v-actions .btn:focus-visible,.v-img:focus-visible{outline:3px solid rgba(200,32,42,.35);outline-offset:3px}
+@media(max-width:1050px){
+  .grid-v{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+}
+@media(max-width:640px){
+  .grid-v{grid-template-columns:minmax(0,1fr);gap:18px;max-width:430px}
+  .v-img{aspect-ratio:16/9}
+  .v-body{padding:17px;gap:13px}
+  .v-specs{padding:11px;gap:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .v-card,.v-img img,.v-img svg{transition:none}
+}
