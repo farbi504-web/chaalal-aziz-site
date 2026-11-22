@@ -42,11 +42,11 @@ window.VEHICLES = [
   {
     id: 'demo-renault-clio',
     demo: true,
-    featured: false,
-    name: 'Renault Clio — Démo',
-    nameAr: 'رينو كليو — سيارة تجريبية',
+    featured: true,
+    name: 'Renault Clio IV — Démo',
+    nameAr: 'رينو كليو 4 — تجريبية',
     brand: 'Renault',
-    model: 'Clio',
+    model: 'Clio IV',
     year: null,
     cat: 'citadine',
     trans: 'manual',
@@ -54,11 +54,55 @@ window.VEHICLES = [
     seats: 5,
     price: null,
     available: null,
-    images: [],
+    images: ['https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Renault_Clio_TCe_90_Luxe_%28IV%29_%E2%80%93_Frontansicht%2C_17._Mai_2013%2C_M%C3%BCnster.jpg/1200px-Renault_Clio_TCe_90_Luxe_%28IV%29_%E2%80%93_Frontansicht%2C_17._Mai_2013%2C_M%C3%BCnster.jpg'],
     conditions: null,
     desc: {
-      fr: "Fiche de démonstration uniquement — ce véhicule n'est pas proposé à la location.",
-      ar: 'بطاقة تجريبية للعرض فقط — هذه السيارة ليست معروضة للإيجار.'
+      fr: "Photo illustrative et fiche de démonstration uniquement — ce véhicule n'est pas confirmé dans la flotte de l'agence.",
+      ar: 'صورة توضيحية وبطاقة تجريبية فقط — هذه السيارة غير مؤكدة ضمن أسطول الوكالة.'
+    }
+  },
+  {
+    id: 'demo-dacia-sandero',
+    demo: true,
+    featured: false,
+    name: 'Dacia Sandero — Démo',
+    nameAr: 'داسيا سانديرو — تجريبية',
+    brand: 'Dacia',
+    model: 'Sandero',
+    year: null,
+    cat: 'citadine',
+    trans: 'manual',
+    fuel: 'petrol',
+    seats: 5,
+    price: null,
+    available: null,
+    images: ['https://upload.wikimedia.org/wikipedia/commons/9/92/Dacia_Sandero_front_20090722.jpg'],
+    conditions: null,
+    desc: {
+      fr: "Photo illustrative et fiche de démonstration uniquement — ce véhicule n'est pas confirmé dans la flotte de l'agence.",
+      ar: 'صورة توضيحية وبطاقة تجريبية فقط — هذه السيارة غير مؤكدة ضمن أسطول الوكالة.'
+    }
+  },
+  {
+    id: 'demo-volkswagen-golf',
+    demo: true,
+    featured: false,
+    name: 'Volkswagen Golf — Démo',
+    nameAr: 'فولكسفاغن غولف — تجريبية',
+    brand: 'Volkswagen',
+    model: 'Golf',
+    year: null,
+    cat: 'berline',
+    trans: 'manual',
+    fuel: 'petrol',
+    seats: 5,
+    price: null,
+    available: null,
+    images: ['https://upload.wikimedia.org/wikipedia/commons/5/55/2017_Volkswagen_Golf_%285G_MY18%29_110TSI_Highline_hatchback_%282018-10-12%29.jpg'],
+    conditions: null,
+    desc: {
+      fr: "Photo illustrative et fiche de démonstration uniquement — ce véhicule n'est pas confirmé dans la flotte de l'agence.",
+      ar: 'صورة توضيحية وبطاقة تجريبية فقط — هذه السيارة غير مؤكدة ضمن أسطول الوكالة.'
     }
   }
 ];
